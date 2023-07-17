@@ -11,10 +11,6 @@ export default {
     };
   },
   methods: {
-    changePage(page) {
-      this.currentPage = page;
-      this.getPosts();
-    },
     getPosts() {
       axios
         .get("http://localhost:8000/api/posts", {
@@ -40,6 +36,11 @@ export default {
         this.nPages = response.data.last_page;
       });
   },
+  watch: {
+    currentPage() {
+      this.getPosts();
+    },
+  },
   components: {
     PostCard,
   },
@@ -54,19 +55,33 @@ export default {
 
     <!-- POST LIST -->
     <ul>
-      <li v-for="post in arrPost" :key="post.id">{{ post.title }}</li>
+      <li v-for="post in arrPost" :key="post.id">
+        {{ post.id }} - {{ post.title }}
+      </li>
     </ul>
 
     <!-- PAGINATOR -->
     <nav>
       <ul class="pagination">
+        <li class="page-item" :class="{ disabled: currentPage == 1 }">
+          <a class="page-link" href="#" @click="currentPage--">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
         <li
           v-for="page in nPages"
           :key="page"
           class="page-item"
           :class="{ active: page == currentPage }"
         >
-          <span class="page-link" @click="changePage(page)">{{ page }}</span>
+          <a class="page-link" href="#" @click="currentPage = page">{{
+            page
+          }}</a>
+        </li>
+        <li class="page-item" :class="{ disabled: currentPage == nPages }">
+          <a class="page-link" href="#" @click="currentPage++">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
         </li>
       </ul>
     </nav>

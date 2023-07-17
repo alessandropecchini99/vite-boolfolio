@@ -2,16 +2,22 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap";
 
-import PostList from "./components/PostList.vue";
+import AppNav from "./components/AppNav.vue";
+import AppFooter from "./components/AppFooter.vue";
 export default {
   components: {
-    PostList,
+    AppNav,
+    AppFooter,
   },
 };
 </script>
 
 <template>
-  <PostList />
+  <AppNav />
+
+  <router-view></router-view>
+
+  <AppFooter />
 </template>
 
 <style lang="scss">
