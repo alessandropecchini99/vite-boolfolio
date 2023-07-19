@@ -12,28 +12,26 @@ export default {
     };
   },
   created() {
-    axios.get("http://localhost:8000/api/posts?page=1").then((response) => {
-      this.arrPosts = response.data.data;
-      this.total = response.data.total;
+    axios.get(this.store.baseUrl + "api/posts?page=1").then((response) => {
+      this.arrPosts = response.data.results.data;
+      this.total = response.data.results.total;
     });
   },
   methods: {
     loadMore() {
       axios
-        .get(`http://localhost:8000/api/posts?page=${this.page + 1}`)
+        .get(this.store.baseUrl + `api/posts?page=${this.page + 1}`)
         .then((response) => {
-          this.arrPosts = this.arrPosts.concat(response.data.data);
+          this.arrPosts = this.arrPosts.concat(response.data.results.data);
           this.page++;
         });
     },
     resetCard() {
-      axios.get("http://localhost:8000/api/posts?page=1").then((response) => {
-        this.arrPosts = response.data.data;
-        this.total = response.data.total;
+      axios.get(this.store.baseUrl + "api/posts?page=1").then((response) => {
+        this.arrPosts = response.data.results.data;
+        this.total = response.data.results.total;
+        this.page = 1;
       });
-    },
-    getImageUrl(image) {
-      return image ? image : this.store.baseUrl + "storage/default.jpeg";
     },
   },
 };
@@ -51,7 +49,7 @@ export default {
         style="width: 18rem"
       >
         <img
-          :src="getImageUrl(post.upImage)"
+          :src="this.store.getImageUrl(post.upImage)"
           class="card-img-top"
           :alt="post.title"
         />
@@ -68,20 +66,18 @@ export default {
           >
         </div>
       </div>
+    </div>
 
-      <!-- LOAD MORE -->
-      <div class="d-flex gap-2">
-        <button
-          v-if="arrPosts.length != total"
-          @click="loadMore"
-          class="btn btn-primary mb-3"
-        >
-          Carica altri post
-        </button>
-        <button @click="resetCard()" class="btn btn-secondary mb-3">
-          Reset
-        </button>
-      </div>
+    <!-- LOAD MORE -->
+    <div class="d-flex gap-2 align-items-center justify-content-center">
+      <button
+        v-if="arrPosts.length != total"
+        @click="loadMore"
+        class="btn btn-primary mb-3"
+      >
+        Carica altri post
+      </button>
+      <button @click="resetCard()" class="btn btn-secondary mb-3">Reset</button>
     </div>
   </div>
 </template>
