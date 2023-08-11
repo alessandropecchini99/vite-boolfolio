@@ -1,45 +1,43 @@
 <script>
+import PostCard from "./PostCard.vue";
+import { store } from "../store";
 import axios from "axios";
 
-import PostCard from "./PostCard.vue";
 export default {
   data() {
     return {
-      arrPost: [],
-      currentPage: 1,
-      nPages: 0,
+      arrPosts: [],
+      arrTypes: [],
+      page: 1,
+      total: 0,
+      store,
     };
   },
   methods: {
-    getPosts() {
+    loadMore() {
       axios
-        .get("http://localhost:8000/api/posts", {
-          params: {
-            page: this.currentPage,
-          },
-        })
+        .get(this.store.baseUrl + `api/posts?page=${this.page + 1}`)
         .then((response) => {
-          this.arrPost = response.data.data;
-          this.nPages = response.data.last_page;
+          this.arrPosts = this.arrPosts.concat(response.data.results.data);
+          this.page++;
         });
+    },
+    resetCard() {
+      axios.get(this.store.baseUrl + "api/posts").then((response) => {
+        this.arrPosts = response.data.results.data;
+        this.total = response.data.results.total;
+        this.page = 1;
+      });
+    },
+    getPosts() {
+      axios.get(this.store.baseUrl + "api/posts").then((response) => {
+        this.arrPosts = response.data.results.data;
+        this.total = response.data.results.total;
+      });
     },
   },
   created() {
-    axios
-      .get("http://localhost:8000/api/posts", {
-        params: {
-          page: this.currentPage,
-        },
-      })
-      .then((response) => {
-        this.arrPost = response.data.data;
-        this.nPages = response.data.last_page;
-      });
-  },
-  watch: {
-    currentPage() {
-      this.getPosts();
-    },
+    this.getPosts();
   },
   components: {
     PostCard,
@@ -48,53 +46,26 @@ export default {
 </script>
 
 <template>
-  <div
-    class="w-100 d-flex flex-column align-items-center justify-content-center"
-  >
-    <h1>POST LIST</h1>
+  <div class="container">
+    <h1 class="mb-4">POST LIST</h1>
 
-    <!-- POST LIST -->
-    <ul>
-      <li v-for="post in arrPost" :key="post.id">
-        {{ post.id }} - {{ post.title }}
-      </li>
-    </ul>
+    <!-- CARDS -->
+    <div class="d-flex gap-5 flex-wrap justify-content-center mb-3">
+      <PostCard v-for="post in arrPosts" :key="post.id" :card="post" />
+    </div>
 
-    <!-- PAGINATOR -->
-    <nav>
-      <ul class="pagination">
-        <li class="page-item" :class="{ disabled: currentPage == 1 }">
-          <a class="page-link" href="#" @click="currentPage--">
-            <span aria-hidden="true">&laquo;</span>
-          </a>
-        </li>
-        <li
-          v-for="page in nPages"
-          :key="page"
-          class="page-item"
-          :class="{ active: page == currentPage }"
-        >
-          <a class="page-link" href="#" @click="currentPage = page">{{
-            page
-          }}</a>
-        </li>
-        <li class="page-item" :class="{ disabled: currentPage == nPages }">
-          <a class="page-link" href="#" @click="currentPage++">
-            <span aria-hidden="true">&raquo;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-
-  <!-- POST CARDS -->
-  <div class="text-center mt-5">
-    <PostCard />
+    <!-- LOAD MORE -->
+    <div class="d-flex gap-2 align-items-center justify-content-center">
+      <button
+        v-if="arrPosts.length != total"
+        @click="loadMore"
+        class="btn btn-primary mb-3"
+      >
+        Carica altri post
+      </button>
+      <button @click="resetCard()" class="btn btn-secondary mb-3">Reset</button>
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-ul {
-  list-style-type: none;
-}
-</style>
+<style lang="scss" scoped></style>

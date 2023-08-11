@@ -2,9 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // importo i componenti che definiscono le varie pagine
 import AppHome from "./pages/AppHome.vue";
-import AppAbout from "./pages/AppAbout.vue";
 import PostsIndex from "./pages/PostsIndex.vue";
 import PostsShow from "./pages/PostsShow.vue";
+import AppAbout from "./pages/AppAbout.vue";
+import AppContact from "./pages/AppContact.vue";
 import App404 from "./pages/App404.vue";
 
 const router = createRouter({
@@ -29,6 +30,11 @@ const router = createRouter({
       path: "/about",
       name: "about",
       component: AppAbout,
+    },
+    {
+      path: "/contact",
+      name: "contact",
+      component: AppContact,
     },
     {
       path: "/:pathMatch(.*)*",

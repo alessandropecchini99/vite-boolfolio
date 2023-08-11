@@ -1,9 +1,9 @@
 <script>
-import PostCard from "../components/PostCard.vue";
+import PostList from "../components/PostList.vue";
 
 export default {
   components: {
-    PostCard,
+    PostList,
   },
 };
 </script>
@@ -11,7 +11,7 @@ export default {
 <template>
   <h1>PostIndex</h1>
 
-  <PostCard />
+  <PostList />
 </template>
 
 <style lang="scss" scoped></style>

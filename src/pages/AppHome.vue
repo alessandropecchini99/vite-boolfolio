@@ -38,6 +38,7 @@ export default {
 <style lang="scss" scoped>
 .row {
   height: 80vh;
+  padding: 4em;
 }
 
 .col {
